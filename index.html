@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Welcome to the Kitchen</title>
     
-    <!-- PWA Meta Tags for iPhone & Chromebook -->
+    <!-- PWA Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -31,12 +31,12 @@
                     }
                 }
             }
-        }
+        };
     </script>
     <style>
         body { background-color: #0D0F12; color: #F3F4F6; font-family: system-ui, -apple-system, sans-serif; }
-        header.sticky { padding-top: constant(safe-area-inset-top); padding-top: env(safe-area-inset-top); }
-        footer { padding-bottom: constant(safe-area-inset-bottom); padding-bottom: env(safe-area-inset-bottom); }
+        header.sticky { padding-top: env(safe-area-inset-top); }
+        footer { padding-bottom: env(safe-area-inset-bottom); }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #0D0F12; }
         ::-webkit-scrollbar-thumb { background: #2A2F3A; border-radius: 3px; }
@@ -53,35 +53,35 @@
                 <div>
                     <h1 class="text-base sm:text-lg font-bold tracking-tight text-white flex items-center gap-2">
                         Welcome to the Kitchen
-                        <span id="syncStatusBadge" class="text-[10px] font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Synced</span>
+                        <span id="syncStatusBadge" class="text-[11px] font-medium px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">Connecting...</span>
                     </h1>
-                    <p class="text-xs text-gray-400 hidden sm:block"><span id="recipeCountDisplay">Loading</span> recipes indexed</p>
+                    <p class="text-xs text-gray-400 hidden sm:block"><span id="recipeCountDisplay">0</span> recipes indexed</p>
                 </div>
             </div>
 
             <div class="flex items-center space-x-2 sm:space-x-3">
-                <button onclick="triggerManualSync()" title="Refresh Sheet Data" class="p-2 rounded-lg bg-cardbg border border-bordercolor hover:border-copper/50 text-gray-300 hover:text-white transition flex items-center gap-1.5 text-xs font-medium">
-                    <span id="syncSpinner">↻</span> <span class="hidden md:inline">Sync Sheet</span>
+                <button type="button" onclick="triggerManualSync()" title="Refresh Sheet Data" class="p-2 rounded-lg bg-cardbg border border-bordercolor hover:border-copper/50 text-gray-300 hover:text-white transition flex items-center gap-1.5 text-xs font-medium">
+                    <span id="syncSpinner" class="inline-block">↻</span> <span class="hidden md:inline">Sync Sheet</span>
                 </button>
-                <button onclick="toggleMegaDrawer()" id="filterMegaBtn" class="px-3.5 py-2 rounded-lg bg-copper text-white font-medium hover:bg-copper-hover transition shadow-lg shadow-copper/20 flex items-center gap-2 text-sm">
+                <button type="button" onclick="toggleMegaDrawer()" id="filterMegaBtn" class="px-3.5 py-2 rounded-lg bg-copper text-white font-medium hover:bg-copper-hover transition shadow-lg shadow-copper/20 flex items-center gap-2 text-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707v3.172a1 1 0 01-.553.894l-4 2A1 1 0 017 18.172v-3.172a1 1 0 00-.293-.707L.293 7.293A1 1 0 010 6.586V4z"/></svg>
                     <span>Intelligent Filtering</span>
-                    <span id="activeFilterBadge" class="hidden ml-1 px-1.5 py-0.2 bg-white text-copper rounded-full text-xs font-bold">0</span>
+                    <span id="activeFilterBadge" class="hidden ml-1 px-1.5 py-0.5 bg-white text-copper rounded-full text-xs font-bold">0</span>
                 </button>
             </div>
         </div>
     </header>
 
     <!-- Asymmetric 3-Zone Mega Drawer -->
-    <div id="megaDrawer" class="hidden fixed inset-x-0 top-16 z-50 bg-obsidian/95 backdrop-blur-xl border-b border-bordercolor shadow-2xl max-h-[calc(100vh-4rem)] overflow-y-auto transition-all duration-300">
+    <div id="megaDrawer" class="hidden fixed inset-x-0 top-16 z-50 bg-obsidian/95 backdrop-blur-xl border-b border-bordercolor shadow-2xl max-h-[calc(100vh-4rem)] overflow-y-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div class="flex items-center justify-between pb-4 mb-6 border-b border-bordercolor">
                 <h2 class="text-lg font-semibold text-white flex items-center gap-2">
                     <span class="text-copper">⚙️</span> Intelligent Filtering Console
                 </h2>
                 <div class="flex items-center gap-3">
-                    <button onclick="clearAllFilters()" class="text-xs text-gray-400 hover:text-white underline transition">Clear All Filters</button>
-                    <button onclick="toggleMegaDrawer()" class="p-1.5 rounded-lg bg-cardbg border border-bordercolor text-gray-400 hover:text-white">✕</button>
+                    <button type="button" onclick="clearAllFilters(true)" class="text-xs text-gray-400 hover:text-white underline transition">Clear All Filters</button>
+                    <button type="button" onclick="toggleMegaDrawer()" class="p-1.5 rounded-lg bg-cardbg border border-bordercolor text-gray-400 hover:text-white">✕</button>
                 </div>
             </div>
 
@@ -91,19 +91,19 @@
                     <h3 class="text-xs font-bold uppercase tracking-wider text-copper">1. Protein & Cuisine Chains</h3>
                     <div>
                         <label class="block text-xs font-medium text-gray-400 mb-1">Protein Category</label>
-                        <select id="filterProCat" onchange="onProCatChange(); applyFilters();" class="w-full bg-obsidian border border-bordercolor rounded-lg px-3 py-2 text-sm text-white focus:border-copper outline-none">
+                        <select id="filterProCat" onchange="onProCatChange(); applyFilters(true);" class="w-full bg-obsidian border border-bordercolor rounded-lg px-3 py-2 text-sm text-white focus:border-copper outline-none">
                             <option value="">All Protein Categories</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-gray-400 mb-1">Specific Protein</label>
-                        <select id="filterPro" onchange="applyFilters();" class="w-full bg-obsidian border border-bordercolor rounded-lg px-3 py-2 text-sm text-white focus:border-copper outline-none">
+                        <select id="filterPro" onchange="applyFilters(true);" class="w-full bg-obsidian border border-bordercolor rounded-lg px-3 py-2 text-sm text-white focus:border-copper outline-none">
                             <option value="">All Proteins</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-gray-400 mb-1">Cuisine / Origin</label>
-                        <select id="filterCuisine" onchange="applyFilters();" class="w-full bg-obsidian border border-bordercolor rounded-lg px-3 py-2 text-sm text-white focus:border-copper outline-none">
+                        <select id="filterCuisine" onchange="applyFilters(true);" class="w-full bg-obsidian border border-bordercolor rounded-lg px-3 py-2 text-sm text-white focus:border-copper outline-none">
                             <option value="">All Cuisines & Origins</option>
                         </select>
                     </div>
@@ -114,19 +114,19 @@
                     <h3 class="text-xs font-bold uppercase tracking-wider text-copper">2. Course, Method & Season</h3>
                     <div>
                         <label class="block text-xs font-medium text-gray-400 mb-1">Menu Category</label>
-                        <select id="filterMenuCat" onchange="applyFilters();" class="w-full bg-obsidian border border-bordercolor rounded-lg px-3 py-2 text-sm text-white focus:border-copper outline-none">
+                        <select id="filterMenuCat" onchange="applyFilters(true);" class="w-full bg-obsidian border border-bordercolor rounded-lg px-3 py-2 text-sm text-white focus:border-copper outline-none">
                             <option value="">All Menu Categories</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-gray-400 mb-1">Cooking Method</label>
-                        <select id="filterMethod" onchange="applyFilters();" class="w-full bg-obsidian border border-bordercolor rounded-lg px-3 py-2 text-sm text-white focus:border-copper outline-none">
+                        <select id="filterMethod" onchange="applyFilters(true);" class="w-full bg-obsidian border border-bordercolor rounded-lg px-3 py-2 text-sm text-white focus:border-copper outline-none">
                             <option value="">All Methods</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-gray-400 mb-1">Season</label>
-                        <select id="filterSeason" onchange="applyFilters();" class="w-full bg-obsidian border border-bordercolor rounded-lg px-3 py-2 text-sm text-white focus:border-copper outline-none">
+                        <label class="block text-xs font-medium text-gray-400 mb-1">Season (Time of Year)</label>
+                        <select id="filterSeason" onchange="applyFilters(true);" class="w-full bg-obsidian border border-bordercolor rounded-lg px-3 py-2 text-sm text-white focus:border-copper outline-none">
                             <option value="">All Seasons</option>
                         </select>
                     </div>
@@ -137,19 +137,19 @@
                     <h3 class="text-xs font-bold uppercase tracking-wider text-copper">3. Chef, Occasion & Media</h3>
                     <div>
                         <label class="block text-xs font-medium text-gray-400 mb-1">Chef / Host</label>
-                        <select id="filterChef" onchange="applyFilters();" class="w-full bg-obsidian border border-bordercolor rounded-lg px-3 py-2 text-sm text-white focus:border-copper outline-none">
+                        <select id="filterChef" onchange="applyFilters(true);" class="w-full bg-obsidian border border-bordercolor rounded-lg px-3 py-2 text-sm text-white focus:border-copper outline-none">
                             <option value="">All Chefs & Guests</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-gray-400 mb-1">Occasion / Vibe</label>
-                        <select id="filterOccasion" onchange="applyFilters();" class="w-full bg-obsidian border border-bordercolor rounded-lg px-3 py-2 text-sm text-white focus:border-copper outline-none">
+                        <select id="filterOccasion" onchange="applyFilters(true);" class="w-full bg-obsidian border border-bordercolor rounded-lg px-3 py-2 text-sm text-white focus:border-copper outline-none">
                             <option value="">All Occasions</option>
                         </select>
                     </div>
                     <div class="pt-2">
                         <label class="flex items-center space-x-3 cursor-pointer">
-                            <input type="checkbox" id="filterVideoOnly" onchange="applyFilters();" class="w-4 h-4 rounded bg-obsidian border-bordercolor text-copper focus:ring-copper">
+                            <input type="checkbox" id="filterVideoOnly" onchange="applyFilters(true);" class="w-4 h-4 rounded bg-obsidian border-bordercolor text-copper focus:ring-copper">
                             <span class="text-sm font-medium text-white">🎥 Show Video Recipes Only</span>
                         </label>
                     </div>
@@ -165,7 +165,7 @@
                 Find Your Next Culinary Masterpiece
             </h2>
             <p class="text-sm sm:text-base text-gray-400 max-w-2xl mx-auto">
-                Explore 1,796 tested recipes indexed across seasons, chefs, methods, and proteins.
+                Explore tested recipes indexed across seasons, chefs, methods, and proteins.
             </p>
 
             <!-- Command Search Input -->
@@ -173,32 +173,17 @@
                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 </div>
-                <input type="text" id="searchInput" oninput="applyFilters()" placeholder="Search recipes, ingredients, subtypes, or tags..." class="w-full pl-11 pr-4 py-3.5 bg-cardbg border border-bordercolor focus:border-copper rounded-xl text-white placeholder-gray-500 text-sm shadow-xl outline-none transition">
-                <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
-                    <span class="text-xs px-2 py-1 bg-obsidian border border-bordercolor rounded text-gray-400 font-mono">/</span>
-                </div>
+                <input type="text" id="searchInput" oninput="applyFilters(true)" placeholder="Search recipes, ingredients, subtypes, or tags..." class="w-full pl-11 pr-4 py-3.5 bg-cardbg border border-bordercolor focus:border-copper rounded-xl text-white placeholder-gray-400 text-sm shadow-xl outline-none transition">
             </div>
 
-            <!-- 6 Quick-Lens Pills -->
+            <!-- Quick-Lens Pills -->
             <div class="flex flex-wrap items-center justify-center gap-2 pt-2">
-                <button onclick="setQuickLens('video')" class="quick-lens-btn px-3 py-1.5 rounded-full bg-cardbg border border-bordercolor hover:border-copper text-xs font-medium text-gray-300 hover:text-white transition flex items-center gap-1.5">
-                    <span>🎥</span> Video Recipes
-                </button>
-                <button onclick="setQuickLens('italian')" class="quick-lens-btn px-3 py-1.5 rounded-full bg-cardbg border border-bordercolor hover:border-copper text-xs font-medium text-gray-300 hover:text-white transition flex items-center gap-1.5">
-                    <span>🍝</span> Italian & Pasta
-                </button>
-                <button onclick="setQuickLens('gameday')" class="quick-lens-btn px-3 py-1.5 rounded-full bg-cardbg border border-bordercolor hover:border-copper text-xs font-medium text-gray-300 hover:text-white transition flex items-center gap-1.5">
-                    <span>🏈</span> Game Day & Party
-                </button>
-                <button onclick="setQuickLens('grill')" class="quick-lens-btn px-3 py-1.5 rounded-full bg-cardbg border border-bordercolor hover:border-copper text-xs font-medium text-gray-300 hover:text-white transition flex items-center gap-1.5">
-                    <span>🔥</span> Grill Master
-                </button>
-                <button onclick="setQuickLens('slowcook')" class="quick-lens-btn px-3 py-1.5 rounded-full bg-cardbg border border-bordercolor hover:border-copper text-xs font-medium text-gray-300 hover:text-white transition flex items-center gap-1.5">
-                    <span>🍲</span> Slow Cooked & Comfort
-                </button>
-                <button onclick="setQuickLens('handheld')" class="quick-lens-btn px-3 py-1.5 rounded-full bg-cardbg border border-bordercolor hover:border-copper text-xs font-medium text-gray-300 hover:text-white transition flex items-center gap-1.5">
-                    <span>🥪</span> Sandos, Burgers & Tacos
-                </button>
+                <button type="button" onclick="setQuickLens('video')" class="px-3 py-1.5 rounded-full bg-cardbg border border-bordercolor hover:border-copper text-xs font-medium text-gray-300 hover:text-white transition">🎥 Video Recipes</button>
+                <button type="button" onclick="setQuickLens('italian')" class="px-3 py-1.5 rounded-full bg-cardbg border border-bordercolor hover:border-copper text-xs font-medium text-gray-300 hover:text-white transition">🍝 Italian & Pasta</button>
+                <button type="button" onclick="setQuickLens('gameday')" class="px-3 py-1.5 rounded-full bg-cardbg border border-bordercolor hover:border-copper text-xs font-medium text-gray-300 hover:text-white transition">🏈 Game Day & Party</button>
+                <button type="button" onclick="setQuickLens('grill')" class="px-3 py-1.5 rounded-full bg-cardbg border border-bordercolor hover:border-copper text-xs font-medium text-gray-300 hover:text-white transition">🔥 Grill Master</button>
+                <button type="button" onclick="setQuickLens('slowcook')" class="px-3 py-1.5 rounded-full bg-cardbg border border-bordercolor hover:border-copper text-xs font-medium text-gray-300 hover:text-white transition">🍲 Slow Cooked</button>
+                <button type="button" onclick="setQuickLens('handheld')" class="px-3 py-1.5 rounded-full bg-cardbg border border-bordercolor hover:border-copper text-xs font-medium text-gray-300 hover:text-white transition">🥪 Sandos & Tacos</button>
             </div>
         </div>
     </section>
@@ -206,38 +191,38 @@
     <!-- Active Filter Breadcrumb Bar -->
     <div id="activeBreadcrumbBar" class="hidden bg-cardbg/50 border-b border-bordercolor py-2.5 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-2 text-xs">
-            <div id="activeFiltersList" class="flex items-center flex-wrap gap-1.5">
-                <!-- Dynamically injected chips -->
-            </div>
-            <button onclick="clearAllFilters()" class="text-copper hover:underline font-medium">Reset All</button>
+            <div id="activeFiltersList" class="flex items-center flex-wrap gap-1.5"></div>
+            <button type="button" onclick="clearAllFilters(true)" class="text-copper hover:underline font-medium">Reset All</button>
         </div>
     </div>
 
     <!-- Bento Recipe Grid Container -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="flex items-center justify-between mb-6">
-            <h3 id="resultCountHeader" class="text-sm font-semibold text-gray-400 uppercase tracking-wider">
-                Showing Recipes
-            </h3>
+            <h3 id="resultCountHeader" class="text-sm font-semibold text-gray-400 uppercase tracking-wider">Showing Recipes</h3>
             <div class="flex items-center gap-2 text-xs text-gray-400">
                 <span>Sort by:</span>
-                <select id="sortSelect" onchange="applyFilters()" class="bg-cardbg border border-bordercolor rounded-lg px-2.5 py-1 text-white focus:border-copper outline-none">
+                <select id="sortSelect" onchange="applyFilters(false)" class="bg-cardbg border border-bordercolor rounded-lg px-2.5 py-1 text-white focus:border-copper outline-none">
                     <option value="season-asc">Season & Episode (1 → 2)</option>
                     <option value="title-asc">Recipe Title (A → Z)</option>
                 </select>
             </div>
         </div>
 
-        <div id="recipeGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            <!-- Dynamically Rendered Bento Cards -->
+        <div id="recipeGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+
+        <!-- Load More Button -->
+        <div id="loadMoreContainer" class="hidden text-center mt-8">
+            <button type="button" onclick="loadMoreRecipes()" class="px-6 py-2.5 bg-cardbg border border-copper/50 hover:bg-copper text-white rounded-xl text-sm font-semibold transition shadow-lg">
+                Load More Recipes
+            </button>
         </div>
 
         <!-- Empty State -->
         <div id="emptyState" class="hidden text-center py-20 space-y-4">
             <div class="text-4xl">🍳</div>
             <h4 class="text-lg font-bold text-white">No recipes found matching your criteria</h4>
-            <p class="text-sm text-gray-400">Try adjusting your filters or clearing search terms.</p>
-            <button onclick="clearAllFilters()" class="px-4 py-2 bg-copper text-white rounded-lg text-sm font-medium hover:bg-copper-hover transition">Clear Filters</button>
+            <button type="button" onclick="clearAllFilters(true)" class="px-4 py-2 bg-copper text-white rounded-lg text-sm font-medium hover:bg-copper-hover transition">Clear Filters</button>
         </div>
     </main>
 
@@ -249,13 +234,17 @@
     <!-- Application Script -->
     <script>
         const PUBLISHED_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSjolaocowJo9wgFCzAS1QT5iIReRCcVebnuF_AWHYPNUJMMG02wp26DoGCXlpDgmjmL-3lEsgilAVt/pub?output=csv';
-        const STORAGE_KEY = 'kitchen_recipes_v2_cache';
+        const STORAGE_KEY = 'kitchen_recipes_v3_cache';
+        const PAGE_SIZE = 90;
+
+        let currentDisplayLimit = PAGE_SIZE;
+        let currentFilteredRecipes = [];
 
         let allRecipes = [
-            {recipe_id:"rec-0001", season:"1", episode:"1", recipe_link:"https://www.foodnetwork.com/recipes/jeff-mauro/chicago-gumbo-2282187", video:false, recipe_title:"Chicago Gumbo", menu_cat:"Entree", menu_cat2:"", subtype:"Gumbo", pro_cat:"Meat", pro:"Pork", pro_subcat:"Sausage", method1:"Stovetop", method2:"", season1:"", season2:"", occasion:"", occasion2:"", g_region:"NA", geo:"USA", culture:"Cajun", meal:"Dinner", chef:"JM", all_menu_cats:"Entree", all_methods:"Stovetop", all_seasons:"", all_occasions:"", cuisine_origin:"Cajun (USA)"},
-            {recipe_id:"rec-0002", season:"1", episode:"1", recipe_link:"https://www.foodnetwork.com/recipes/katie-lee/creamy-kale-and-eggs-2282184", video:true, recipe_title:"Creamy Kale and Eggs", menu_cat:"Breakfast", menu_cat2:"", subtype:"", pro_cat:"", pro:"", pro_subcat:"", method1:"Stovetop", method2:"", season1:"", season2:"", occasion:"", occasion2:"", g_region:"", geo:"", culture:"", meal:"Breakfast", chef:"KL", all_menu_cats:"Breakfast", all_methods:"Stovetop", all_seasons:"", all_occasions:"", cuisine_origin:""},
-            {recipe_id:"rec-0003", season:"1", episode:"1", recipe_link:"https://www.foodnetwork.com/recipes/geoffrey-zakarian/italian-chicken-pasta-salad-2282186", video:true, recipe_title:"Italian Chicken Pasta Salad", menu_cat:"Entree", menu_cat2:"Side", subtype:"Pasta Salad", pro_cat:"Poultry", pro:"Chicken", pro_subcat:"", method1:"Stovetop", method2:"", season1:"", season2:"", occasion:"", occasion2:"", g_region:"EMEA", geo:"Italy", culture:"", meal:"Lunch", chef:"GZ", all_menu_cats:"Entree | Side", all_methods:"Stovetop", all_seasons:"", all_occasions:"", cuisine_origin:"Italy"},
-            {recipe_id:"rec-0004", season:"1", episode:"2", recipe_link:"https://www.foodnetwork.com/recipes/slow-cooker-pot-roast-2286045", video:false, recipe_title:"Slow Cooker Pot Roast", menu_cat:"Entree", menu_cat2:"", subtype:"Pot Roast", pro_cat:"Meat", pro:"Beef", pro_subcat:"Roast", method1:"Slow Cooking", method2:"", season1:"Winter", season2:"Fall", occasion:"Comfort", occasion2:"", g_region:"", geo:"", culture:"", meal:"Dinner", chef:"Guest", all_menu_cats:"Entree", all_methods:"Slow Cooking", all_seasons:"Winter | Fall", all_occasions:"Comfort", cuisine_origin:""}
+            normalizeRow({recipe_id:"rec-0001", season:"1", episode:"1", recipe_link:"https://www.foodnetwork.com/recipes/jeff-mauro/chicago-gumbo-2282187", video:"FALSE", recipe_title:"Chicago Gumbo", menu_cat:"Entree", menu_cat2:"", subtype:"Gumbo", pro_cat:"Meat", pro:"Pork", pro_subcat:"Sausage", method1:"Stovetop", method2:"", season1:"", season2:"", occasion:"", occasion2:"", g_region:"NA", geo:"USA", culture:"Cajun", meal:"Dinner", chef:"JM"}, 1),
+            normalizeRow({recipe_id:"rec-0002", season:"1", episode:"1", recipe_link:"https://www.foodnetwork.com/recipes/katie-lee/creamy-kale-and-eggs-2282184", video:"TRUE", recipe_title:"Creamy Kale and Eggs", menu_cat:"Breakfast", menu_cat2:"", subtype:"Eggs", pro_cat:"", pro:"", pro_subcat:"", method1:"Stovetop", method2:"", season1:"Spring", season2:"", occasion:"Brunch", occasion2:"", g_region:"", geo:"", culture:"", meal:"Breakfast", chef:"KL"}, 2),
+            normalizeRow({recipe_id:"rec-0003", season:"1", episode:"1", recipe_link:"https://www.foodnetwork.com/recipes/geoffrey-zakarian/italian-chicken-pasta-salad-2282186", video:"TRUE", recipe_title:"Italian Chicken Pasta Salad", menu_cat:"Entree", menu_cat2:"Side", subtype:"Pasta Salad", pro_cat:"Poultry", pro:"Chicken", pro_subcat:"", method1:"Stovetop", method2:"", season1:"Summer", season2:"", occasion:"Picnic", occasion2:"", g_region:"EMEA", geo:"Italy", culture:"", meal:"Lunch", chef:"GZ"}, 3),
+            normalizeRow({recipe_id:"rec-0004", season:"1", episode:"2", recipe_link:"https://www.foodnetwork.com/recipes/slow-cooker-pot-roast-2286045", video:"FALSE", recipe_title:"Slow Cooker Pot Roast", menu_cat:"Entree", menu_cat2:"", subtype:"Pot Roast", pro_cat:"Meat", pro:"Beef", pro_subcat:"Roast", method1:"Slow Cooking", method2:"", season1:"Winter", season2:"Fall", occasion:"Comfort", occasion2:"", g_region:"", geo:"", culture:"", meal:"Dinner", chef:"Guest"}, 4)
         ];
 
         const chefNameMap = {
@@ -266,56 +255,110 @@
             'MV': 'Marcela Valladolid',
             'AG': 'Alex Guarnaschelli',
             'Guest': 'Guest Chef',
+            'guest': 'Guest Chef',
+            'Team': 'The Kitchen Team',
+            'team': 'The Kitchen Team',
             'JM | GZ': 'Jeff Mauro & Geoffrey Zakarian'
         };
 
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', function() {
             loadCachedOrStarterData();
             fetchLiveCsvData();
             injectDynamicPwaAssets();
         });
 
-        function loadCachedOrStarterData() {
-            const cached = localStorage.getItem(STORAGE_KEY);
-            if (cached) {
-                try {
-                    const parsed = JSON.parse(cached);
-                    if (Array.isArray(parsed) && parsed.length > 0) {
-                        allRecipes = parsed;
-                    }
-                } catch(e) {}
+        function normalizeRow(raw, index) {
+            let obj = {};
+            for (let k in raw) {
+                let cleanKey = k.trim().toLowerCase().replace(/[^a-z0-9_]/g, '_');
+                obj[cleanKey] = (raw[k] !== undefined && raw[k] !== null) ? String(raw[k]).trim() : '';
             }
-            populateDropdowns();
-            applyFilters();
+
+            let v = (obj.video || '').toUpperCase();
+            obj.video = (v === 'TRUE' || v === '1' || v === 'Y' || v === 'YES');
+
+            if (!obj.recipe_id) {
+                obj.recipe_id = 'rec-' + String(index).padStart(4, '0');
+            }
+
+            // Build synthetic rollups automatically if not already provided in CSV
+            if (!obj.all_menu_cats) {
+                obj.all_menu_cats = [obj.menu_cat, obj.menu_cat2].filter(Boolean).join(' | ');
+            }
+            if (!obj.all_methods) {
+                obj.all_methods = [obj.method1, obj.method2].filter(Boolean).join(' | ');
+            }
+            if (!obj.all_seasons) {
+                obj.all_seasons = [obj.season1, obj.season2].filter(Boolean).join(' | ');
+            }
+            if (!obj.all_occasions) {
+                obj.all_occasions = [obj.occasion, obj.occasion2].filter(Boolean).join(' | ');
+            }
+            if (!obj.cuisine_origin) {
+                if (obj.culture && obj.geo) {
+                    obj.cuisine_origin = obj.culture + ' (' + obj.geo + ')';
+                } else {
+                    obj.cuisine_origin = obj.culture || obj.geo || '';
+                }
+            }
+            return obj;
         }
 
-        async function fetchLiveCsvData() {
+        function loadCachedOrStarterData() {
             try {
-                const response = await fetch(PUBLISHED_CSV_URL);
-                if (!response.ok) throw new Error('Network response failed');
-                const csvText = await response.text();
-                const parsedRows = parseCSV(csvText);
-                if (parsedRows.length > 50) {
-                    allRecipes = parsedRows;
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(allRecipes));
-                    document.getElementById('syncStatusBadge').className = 'text-[10px] font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
-                    document.getElementById('syncStatusBadge').textContent = 'Live Synced';
-                    populateDropdowns();
-                    applyFilters();
+                const cached = localStorage.getItem(STORAGE_KEY);
+                if (cached) {
+                    const parsed = JSON.parse(cached);
+                    if (Array.isArray(parsed) && parsed.length > 10) {
+                        allRecipes = parsed;
+                        const badge = document.getElementById('syncStatusBadge');
+                        badge.className = 'text-[11px] font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+                        badge.textContent = 'Cached (' + allRecipes.length + ')';
+                    }
                 }
-            } catch(err) {
-                console.warn('Live CSV fetch failed, using cache:', err);
-                document.getElementById('syncStatusBadge').className = 'text-[10px] font-medium px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20';
-                document.getElementById('syncStatusBadge').textContent = 'Cached Mode';
+            } catch (e) {
+                console.warn('Cache read error:', e);
             }
+            populateDropdowns();
+            applyFilters(true);
+        }
+
+        function fetchLiveCsvData() {
+            const badge = document.getElementById('syncStatusBadge');
+            fetch(PUBLISHED_CSV_URL, { cache: 'no-store' })
+                .then(function(res) {
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    return res.text();
+                })
+                .then(function(csvText) {
+                    const parsedRows = parseCSV(csvText);
+                    if (parsedRows.length > 10) {
+                        allRecipes = parsedRows;
+                        try {
+                            localStorage.setItem(STORAGE_KEY, JSON.stringify(allRecipes));
+                        } catch (e) {
+                            console.warn('LocalStorage quota exceeded, continuing in memory');
+                        }
+                        badge.className = 'text-[11px] font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+                        badge.textContent = 'Live Synced';
+                        populateDropdowns();
+                        applyFilters(false);
+                    } else {
+                        throw new Error('Parsed fewer than 10 rows (' + parsedRows.length + ')');
+                    }
+                })
+                .catch(function(err) {
+                    console.error('Live CSV fetch failed:', err);
+                    badge.className = 'text-[11px] font-medium px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20';
+                    badge.textContent = allRecipes.length > 10 ? 'Cached Mode' : 'Sync Error';
+                });
         }
 
         function triggerManualSync() {
             const spinner = document.getElementById('syncSpinner');
             spinner.classList.add('animate-spin');
-            fetchLiveCsvData().finally(() => {
-                setTimeout(() => spinner.classList.remove('animate-spin'), 600);
-            });
+            fetchLiveCsvData();
+            setTimeout(function() { spinner.classList.remove('animate-spin'); }, 700);
         }
 
         function parseCSV(text) {
@@ -326,7 +369,7 @@
             
             for (let i = 0; i < text.length; i++) {
                 let c = text[i];
-                let next = text[i+1];
+                let next = text[i + 1];
                 if (c === '"' && insideQuote && next === '"') {
                     currentField += '"';
                     i++;
@@ -347,40 +390,46 @@
             }
             if (currentField !== '' || row.length > 0) {
                 row.push(currentField);
-                lines.push(row);
+                if (row.length > 1 || row[0] !== '') lines.push(row);
             }
 
-            if (lines.length < 2) return allRecipes;
-            let headers = lines[0].map(h => h.trim().toLowerCase());
+            if (lines.length < 2) return [];
+            let headers = lines[0].map(function(h) { return h.trim(); });
             let result = [];
 
             for (let i = 1; i < lines.length; i++) {
                 let cols = lines[i];
-                if (cols.length < headers.length) continue;
-                let obj = {};
+                let rawObj = {};
                 for (let j = 0; j < headers.length; j++) {
-                    obj[headers[j]] = (cols[j] !== undefined) ? cols[j].trim() : '';
+                    rawObj[headers[j]] = (cols[j] !== undefined) ? cols[j] : '';
                 }
-                obj.video = (obj.video === 'TRUE' || obj.video === 'true' || obj.video === '1' || obj.video === 'Y');
-                if (!obj.recipe_id) obj.recipe_id = 'rec-' + String(i).padStart(4, '0');
-                if (!obj.recipe_title) continue;
-                result.push(obj);
+                let norm = normalizeRow(rawObj, i);
+                if (!norm.recipe_title) continue;
+                result.push(norm);
             }
-            return result.length > 0 ? result : allRecipes;
+            return result;
+        }
+
+        function splitPipeValues(str, targetSet) {
+            if (!str) return;
+            str.split('|').forEach(function(part) {
+                let trimmed = part.trim();
+                if (trimmed) targetSet.add(trimmed);
+            });
         }
 
         function populateDropdowns() {
             let proCats = new Set(), pros = new Set(), menuCats = new Set(), methods = new Set(), seasons = new Set(), cuisines = new Set(), chefs = new Set(), occasions = new Set();
 
-            allRecipes.forEach(r => {
+            allRecipes.forEach(function(r) {
                 if (r.pro_cat) proCats.add(r.pro_cat);
                 if (r.pro) pros.add(r.pro);
                 if (r.cuisine_origin) cuisines.add(r.cuisine_origin);
                 if (r.chef) chefs.add(r.chef);
-                if (r.all_menu_cats) r.all_menu_cats.split('|').forEach(m => menuCats.add(m.trim()));
-                if (r.all_methods) r.all_methods.split('|').forEach(m => methods.add(m.trim()));
-                if (r.all_seasons) r.all_seasons.split('|').forEach(s => seasons.add(s.trim()));
-                if (r.all_occasions) r.all_occasions.split('|').forEach(o => occasions.add(o.trim()));
+                splitPipeValues(r.all_menu_cats, menuCats);
+                splitPipeValues(r.all_methods, methods);
+                splitPipeValues(r.all_seasons, seasons);
+                splitPipeValues(r.all_occasions, occasions);
             });
 
             fillSelect('filterProCat', proCats);
@@ -392,20 +441,34 @@
             fillSelect('filterOccasion', occasions);
 
             let chefSelect = document.getElementById('filterChef');
+            let currentChef = chefSelect.value;
             chefSelect.innerHTML = '<option value="">All Chefs & Guests</option>';
-            Array.from(chefs).sort().forEach(c => {
+            Array.from(chefs).sort().forEach(function(c) {
                 let displayName = chefNameMap[c] || c;
-                chefSelect.innerHTML += `<option value="${c}">${displayName}</option>`;
+                let opt = document.createElement('option');
+                opt.value = c;
+                opt.textContent = displayName;
+                chefSelect.appendChild(opt);
             });
+            chefSelect.value = currentChef;
         }
 
         function fillSelect(elementId, setValues) {
             let el = document.getElementById(elementId);
+            if (!el) return;
             let currentVal = el.value;
-            let label = el.options[0] ? el.options[0].text : 'All';
-            el.innerHTML = `<option value="">${label}</option>`;
-            Array.from(setValues).filter(Boolean).sort().forEach(val => {
-                el.innerHTML += `<option value="${val}">${val}</option>`;
+            let label = el.options[0] ? el.options[0].textContent : 'All';
+            el.innerHTML = '';
+            let defaultOpt = document.createElement('option');
+            defaultOpt.value = '';
+            defaultOpt.textContent = label;
+            el.appendChild(defaultOpt);
+
+            Array.from(setValues).filter(Boolean).sort().forEach(function(val) {
+                let opt = document.createElement('option');
+                opt.value = val;
+                opt.textContent = val;
+                el.appendChild(opt);
             });
             el.value = currentVal;
         }
@@ -413,17 +476,31 @@
         function onProCatChange() {
             let selectedCat = document.getElementById('filterProCat').value;
             let proSet = new Set();
-            allRecipes.forEach(r => {
+            allRecipes.forEach(function(r) {
                 if (!selectedCat || r.pro_cat === selectedCat) {
                     if (r.pro) proSet.add(r.pro);
                 }
             });
             fillSelect('filterPro', proSet);
+            document.getElementById('filterPro').value = '';
         }
 
         function toggleMegaDrawer() {
             let drawer = document.getElementById('megaDrawer');
-            drawer.classList.toggle('hidden');
+            if (drawer) drawer.classList.toggle('hidden');
+        }
+
+        function selectOptionCaseInsensitive(selectId, targetText) {
+            let el = document.getElementById(selectId);
+            if (!el) return false;
+            let lower = targetText.toLowerCase();
+            for (let i = 0; i < el.options.length; i++) {
+                if (el.options[i].value.toLowerCase().indexOf(lower) !== -1) {
+                    el.value = el.options[i].value;
+                    return true;
+                }
+            }
+            return false;
         }
 
         function setQuickLens(type) {
@@ -431,22 +508,51 @@
             if (type === 'video') {
                 document.getElementById('filterVideoOnly').checked = true;
             } else if (type === 'italian') {
-                document.getElementById('filterCuisine').value = 'Italy';
+                if (!selectOptionCaseInsensitive('filterCuisine', 'ital')) {
+                    document.getElementById('searchInput').value = 'Italian';
+                }
             } else if (type === 'gameday') {
-                document.getElementById('filterOccasion').value = 'Football';
+                if (!selectOptionCaseInsensitive('filterOccasion', 'football') && !selectOptionCaseInsensitive('filterOccasion', 'game')) {
+                    document.getElementById('searchInput').value = 'Game Day';
+                }
             } else if (type === 'grill') {
-                document.getElementById('filterMethod').value = 'Grilling';
+                if (!selectOptionCaseInsensitive('filterMethod', 'grill')) {
+                    document.getElementById('searchInput').value = 'Grill';
+                }
             } else if (type === 'slowcook') {
-                document.getElementById('filterMethod').value = 'Slow Cooking';
+                if (!selectOptionCaseInsensitive('filterMethod', 'slow')) {
+                    document.getElementById('searchInput').value = 'Slow Cook';
+                }
             } else if (type === 'handheld') {
-                document.getElementById('filterMenuCat').value = 'Handheld';
+                if (!selectOptionCaseInsensitive('filterMenuCat', 'handheld') && !selectOptionCaseInsensitive('filterMenuCat', 'sandwich')) {
+                    document.getElementById('searchInput').value = 'Sandwich';
+                }
             }
-            applyFilters();
+            applyFilters(true);
         }
 
-        function clearAllFilters(reRender = true) {
+        function clearSingleFilter(filterKey) {
+            if (filterKey === 'query') document.getElementById('searchInput').value = '';
+            if (filterKey === 'proCat') {
+                document.getElementById('filterProCat').value = '';
+                onProCatChange();
+            }
+            if (filterKey === 'pro') document.getElementById('filterPro').value = '';
+            if (filterKey === 'cuisine') document.getElementById('filterCuisine').value = '';
+            if (filterKey === 'menuCat') document.getElementById('filterMenuCat').value = '';
+            if (filterKey === 'method') document.getElementById('filterMethod').value = '';
+            if (filterKey === 'season') document.getElementById('filterSeason').value = '';
+            if (filterKey === 'occasion') document.getElementById('filterOccasion').value = '';
+            if (filterKey === 'chef') document.getElementById('filterChef').value = '';
+            if (filterKey === 'videoOnly') document.getElementById('filterVideoOnly').checked = false;
+            applyFilters(true);
+        }
+
+        function clearAllFilters(reRender) {
+            if (reRender === undefined) reRender = true;
             document.getElementById('searchInput').value = '';
             document.getElementById('filterProCat').value = '';
+            onProCatChange();
             document.getElementById('filterPro').value = '';
             document.getElementById('filterCuisine').value = '';
             document.getElementById('filterMenuCat').value = '';
@@ -455,10 +561,12 @@
             document.getElementById('filterOccasion').value = '';
             document.getElementById('filterChef').value = '';
             document.getElementById('filterVideoOnly').checked = false;
-            if (reRender) applyFilters();
+            if (reRender) applyFilters(true);
         }
 
-        function applyFilters() {
+        function applyFilters(resetPagination) {
+            if (resetPagination) currentDisplayLimit = PAGE_SIZE;
+
             let query = document.getElementById('searchInput').value.toLowerCase().trim();
             let proCat = document.getElementById('filterProCat').value;
             let pro = document.getElementById('filterPro').value;
@@ -471,94 +579,116 @@
             let videoOnly = document.getElementById('filterVideoOnly').checked;
             let sortMode = document.getElementById('sortSelect').value;
 
-            let filtered = allRecipes.filter(r => {
+            currentFilteredRecipes = allRecipes.filter(function(r) {
                 if (videoOnly && !r.video) return false;
                 if (proCat && r.pro_cat !== proCat) return false;
                 if (pro && r.pro !== pro) return false;
                 if (cuisine && r.cuisine_origin !== cuisine) return false;
-                if (menuCat && !(r.all_menu_cats || '').toLowerCase().includes(menuCat.toLowerCase())) return false;
-                if (method && !(r.all_methods || '').toLowerCase().includes(method.toLowerCase())) return false;
-                if (season && !(r.all_seasons || '').toLowerCase().includes(season.toLowerCase())) return false;
-                if (occasion && !(r.all_occasions || '').toLowerCase().includes(occasion.toLowerCase())) return false;
+                if (menuCat && (r.all_menu_cats || '').toLowerCase().indexOf(menuCat.toLowerCase()) === -1) return false;
+                if (method && (r.all_methods || '').toLowerCase().indexOf(method.toLowerCase()) === -1) return false;
+                if (season && (r.all_seasons || '').toLowerCase().indexOf(season.toLowerCase()) === -1) return false;
+                if (occasion && (r.all_occasions || '').toLowerCase().indexOf(occasion.toLowerCase()) === -1) return false;
                 if (chef && r.chef !== chef) return false;
 
                 if (query) {
-                    let searchable = `${r.recipe_title} ${r.subtype} ${r.pro} ${r.pro_subcat} ${r.cuisine_origin} ${r.chef}`.toLowerCase();
-                    if (!searchable.includes(query)) return false;
+                    let searchable = [
+                        r.recipe_title, r.subtype, r.pro_cat, r.pro, r.pro_subcat,
+                        r.cuisine_origin, r.all_menu_cats, r.all_methods, r.all_occasions, r.meal, r.chef
+                    ].join(' ').toLowerCase();
+                    if (searchable.indexOf(query) === -1) return false;
                 }
                 return true;
             });
 
-            filtered.sort((a, b) => {
+            currentFilteredRecipes.sort(function(a, b) {
                 if (sortMode === 'season-asc') {
-                    let sa = parseInt(a.season) || 0, sb = parseInt(b.season) || 0;
+                    let sa = parseInt(a.season, 10) || 0, sb = parseInt(b.season, 10) || 0;
                     if (sa !== sb) return sa - sb;
-                    let ea = parseInt(a.episode) || 0, eb = parseInt(b.episode) || 0;
+                    let ea = parseInt(a.episode, 10) || 0, eb = parseInt(b.episode, 10) || 0;
                     return ea - eb;
                 } else {
-                    return a.recipe_title.localeCompare(b.recipe_title);
+                    return (a.recipe_title || '').localeCompare(b.recipe_title || '');
                 }
             });
 
-            renderGrid(filtered);
-            updateActiveBreadcrumbs({proCat, pro, cuisine, menuCat, method, season, occasion, chef, videoOnly, query});
+            renderGrid();
+            updateActiveBreadcrumbs({proCat: proCat, pro: pro, cuisine: cuisine, menuCat: menuCat, method: method, season: season, occasion: occasion, chef: chef, videoOnly: videoOnly, query: query});
         }
 
-        function renderGrid(recipes) {
+        function loadMoreRecipes() {
+            currentDisplayLimit += PAGE_SIZE;
+            renderGrid();
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function renderGrid() {
             let grid = document.getElementById('recipeGrid');
             let emptyState = document.getElementById('emptyState');
+            let loadMoreBox = document.getElementById('loadMoreContainer');
             let countHeader = document.getElementById('resultCountHeader');
             let countDisplay = document.getElementById('recipeCountDisplay');
 
-            countHeader.textContent = `Showing ${recipes.length.toLocaleString()} of ${allRecipes.length.toLocaleString()} recipes`;
+            let totalFiltered = currentFilteredRecipes.length;
+            countHeader.textContent = 'Showing ' + Math.min(currentDisplayLimit, totalFiltered).toLocaleString() + ' of ' + totalFiltered.toLocaleString() + ' matching recipes';
             countDisplay.textContent = allRecipes.length.toLocaleString();
 
-            if (recipes.length === 0) {
+            if (totalFiltered === 0) {
                 grid.innerHTML = '';
                 emptyState.classList.remove('hidden');
+                loadMoreBox.classList.add('hidden');
                 return;
             }
             emptyState.classList.add('hidden');
 
+            if (totalFiltered > currentDisplayLimit) {
+                loadMoreBox.classList.remove('hidden');
+            } else {
+                loadMoreBox.classList.add('hidden');
+            }
+
+            let slice = currentFilteredRecipes.slice(0, currentDisplayLimit);
             let html = '';
-            recipes.forEach(r => {
-                let seBadge = (r.season && r.episode) ? `S${r.season} · E${r.episode}` : 'Recipe';
-                let chefDisplay = chefNameMap[r.chef] || r.chef || 'Chef';
-                let videoBadge = r.video ? `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-copper/20 text-copper border border-copper/30">🎥 Video</span>` : '';
+
+            slice.forEach(function(r) {
+                let seBadge = (r.season && r.episode) ? 'S' + escapeHtml(r.season) + ' · E' + escapeHtml(r.episode) : 'Recipe';
+                let chefDisplay = escapeHtml(chefNameMap[r.chef] || r.chef || 'Chef');
+                let videoBadge = r.video ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-copper/20 text-copper border border-copper/30">🎥 Video</span>' : '';
                 
-                let proteinBreadcrumb = [r.pro_cat, r.pro, r.pro_subcat].filter(Boolean).join(' › ');
-                let primaryCat = r.menu_cat || 'Recipe';
-                if (r.menu_cat2) primaryCat += ` / ${r.menu_cat2}`;
+                let proteinBreadcrumb = [r.pro_cat, r.pro, r.pro_subcat].filter(Boolean).map(escapeHtml).join(' › ');
+                let primaryCat = escapeHtml(r.menu_cat || 'Recipe');
+                if (r.menu_cat2) primaryCat += ' / ' + escapeHtml(r.menu_cat2);
 
-                html += `
-                    <div class="group bg-cardbg border border-bordercolor hover:border-copper/50 rounded-2xl p-5 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-lg">
-                        <div>
-                            <div class="flex items-center justify-between mb-3 text-xs">
-                                <span class="font-mono px-2.5 py-1 rounded-md bg-obsidian border border-bordercolor text-gray-400 font-medium">${seBadge}</span>
-                                <div class="flex items-center gap-2">
-                                    ${videoBadge}
-                                    <span class="px-2 py-0.5 rounded text-[11px] bg-obsidian/80 text-gray-300 border border-bordercolor">${chefDisplay}</span>
-                                </div>
-                            </div>
+                let safeLink = escapeHtml(r.recipe_link || '#');
+                let safeTitle = escapeHtml(r.recipe_title);
 
-                            <a href="${r.recipe_link}" target="_blank" rel="noopener noreferrer" class="block text-lg font-bold text-white group-hover:text-copper transition-colors mb-2 leading-snug">
-                                ${r.recipe_title} <span class="text-xs font-normal text-gray-500 inline-block transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">↗</span>
-                            </a>
-
-                            <div class="flex flex-wrap gap-1.5 mb-4">
-                                <span class="px-2 py-0.5 rounded-full text-[11px] font-medium bg-obsidian text-gray-300 border border-bordercolor">${primaryCat}</span>
-                                ${r.subtype ? `<span class="px-2 py-0.5 rounded-full text-[11px] font-medium bg-obsidian text-gray-300 border border-bordercolor">${r.subtype}</span>` : ''}
-                                ${r.meal ? `<span class="px-2 py-0.5 rounded-full text-[11px] font-medium bg-obsidian text-gray-300 border border-bordercolor">${r.meal}</span>` : ''}
-                            </div>
-                        </div>
-
-                        <div class="pt-3 border-t border-bordercolor/60 text-xs text-gray-400 space-y-1">
-                            ${proteinBreadcrumb ? `<div class="truncate"><span class="text-gray-500">Protein:</span> <span class="text-gray-300">${proteinBreadcrumb}</span></div>` : ''}
-                            ${r.cuisine_origin ? `<div><span class="text-gray-500">Origin:</span> <span class="text-gray-300">${r.cuisine_origin}</span></div>` : ''}
-                            ${r.all_methods ? `<div><span class="text-gray-500">Method:</span> <span class="text-gray-300">${r.all_methods}</span></div>` : ''}
-                        </div>
-                    </div>
-                `;
+                html += '<div class="group bg-cardbg border border-bordercolor hover:border-copper/50 rounded-2xl p-5 flex flex-col justify-between transition-all duration-200 shadow-lg">' +
+                            '<div>' +
+                                '<div class="flex items-center justify-between mb-3 text-xs">' +
+                                    '<span class="font-mono px-2.5 py-1 rounded-md bg-obsidian border border-bordercolor text-gray-400 font-medium">' + seBadge + '</span>' +
+                                    '<div class="flex items-center gap-2">' + videoBadge + '<span class="px-2 py-0.5 rounded text-[11px] bg-obsidian/80 text-gray-300 border border-bordercolor">' + chefDisplay + '</span></div>' +
+                                '</div>' +
+                                '<a href="' + safeLink + '" target="_blank" rel="noopener noreferrer" class="block text-lg font-bold text-white hover:text-copper transition-colors mb-2 leading-snug">' + safeTitle + ' ↗</a>' +
+                                '<div class="flex flex-wrap gap-1.5 mb-4">' +
+                                    '<span class="px-2 py-0.5 rounded-full text-[11px] font-medium bg-obsidian text-gray-300 border border-bordercolor">' + primaryCat + '</span>' +
+                                    (r.subtype ? '<span class="px-2 py-0.5 rounded-full text-[11px] font-medium bg-obsidian text-gray-300 border border-bordercolor">' + escapeHtml(r.subtype) + '</span>' : '') +
+                                    (r.meal ? '<span class="px-2 py-0.5 rounded-full text-[11px] font-medium bg-obsidian text-gray-300 border border-bordercolor">' + escapeHtml(r.meal) + '</span>' : '') +
+                                '</div>' +
+                            '</div>' +
+                            '<div class="pt-3 border-t border-bordercolor/60 text-xs text-gray-400 space-y-1">' +
+                                (proteinBreadcrumb ? '<div class="truncate"><span class="text-gray-500">Protein:</span> <span class="text-gray-300">' + proteinBreadcrumb + '</span></div>' : '') +
+                                (r.cuisine_origin ? '<div><span class="text-gray-500">Origin:</span> <span class="text-gray-300">' + escapeHtml(r.cuisine_origin) + '</span></div>' : '') +
+                                (r.all_methods ? '<div><span class="text-gray-500">Method:</span> <span class="text-gray-300">' + escapeHtml(r.all_methods) + '</span></div>' : '') +
+                            '</div>' +
+                        '</div>';
             });
             grid.innerHTML = html;
         }
@@ -568,23 +698,84 @@
             let list = document.getElementById('activeFiltersList');
             let badge = document.getElementById('activeFilterBadge');
             let count = 0;
-            let html = '';
+            list.innerHTML = '';
 
-            function addChip(label, val, clearFn) {
+            function addChip(label, val, key) {
                 count++;
-                html += `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-obsidian border border-bordercolor text-gray-300">
-                    <span class="text-gray-500">${label}:</span> <span class="text-white font-medium">${val}</span>
-                    <button onclick="${clearFn}" class="text-gray-400 hover:text-white ml-1">×</button>
-                </span>`;
+                let span = document.createElement('span');
+                span.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-obsidian border border-bordercolor text-gray-300';
+                span.innerHTML = '<span class="text-gray-500">' + escapeHtml(label) + ':</span> <span class="text-white font-medium">' + escapeHtml(val) + '</span>';
+                let btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'text-gray-400 hover:text-white ml-1 font-bold';
+                btn.textContent = '×';
+                btn.onclick = function() { clearSingleFilter(key); };
+                span.appendChild(btn);
+                list.appendChild(span);
             }
 
-            if (f.query) addChip('Search', f.query, "document.getElementById('searchInput').value=''; applyFilters();");
-            if (f.proCat) addChip('Protein Cat', f.proCat, "document.getElementById('filterProCat').value=''; applyFilters();");
-            if (f.pro) addChip('Protein', f.pro, "document.getElementById('filterPro').value=''; applyFilters();");
-            if (f.cuisine) addChip('Cuisine', f.cuisine, "document.getElementById('filterCuisine').value=''; applyFilters();");
-            if (f.menuCat) addChip('Menu', f.menuCat, "document.getElementById('filterMenuCat').value=''; applyFilters();");
-            if (f.method) addChip('Method', f.method, "document.getElementById('filterMethod').value=''; applyFilters();");
-            if (f.season) addChip('Season', f.season, "document.getElementById('filterSeason').value=''; applyFilters();");
-            if (f.occasion) addChip('Occasion', f.occasion, "document.getElementById('filterOccasion').value=''; applyFilters();");
-            if (f.chef) addChip('Chef', f.chef, "document.getElementById('filterChef').value=''; applyFilters();");
-            if (f.videoOnly) addChip('Video', 'Required', "document
+            if (f.query) addChip('Search', f.query, 'query');
+            if (f.proCat) addChip('Protein Cat', f.proCat, 'proCat');
+            if (f.pro) addChip('Protein', f.pro, 'pro');
+            if (f.cuisine) addChip('Cuisine', f.cuisine, 'cuisine');
+            if (f.menuCat) addChip('Menu', f.menuCat, 'menuCat');
+            if (f.method) addChip('Method', f.method, 'method');
+            if (f.season) addChip('Season', f.season, 'season');
+            if (f.occasion) addChip('Occasion', f.occasion, 'occasion');
+            if (f.chef) addChip('Chef', chefNameMap[f.chef] || f.chef, 'chef');
+            if (f.videoOnly) addChip('Video', 'Required', 'videoOnly');
+
+            if (count > 0) {
+                bar.classList.remove('hidden');
+                badge.textContent = count;
+                badge.classList.remove('hidden');
+            } else {
+                bar.classList.add('hidden');
+                badge.classList.add('hidden');
+            }
+        }
+
+        function injectDynamicPwaAssets() {
+            try {
+                let canvas = document.createElement('canvas');
+                canvas.width = 180;
+                canvas.height = 180;
+                let ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#0D0F12';
+                ctx.fillRect(0, 0, 180, 180);
+                ctx.fillStyle = '#D97736';
+                ctx.font = 'bold 72px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('🍳', 90, 90);
+
+                let dataUrl = canvas.toDataURL('image/png');
+
+                let iconLink = document.createElement('link');
+                iconLink.rel = 'icon';
+                iconLink.href = dataUrl;
+                document.head.appendChild(iconLink);
+
+                let appleLink = document.createElement('link');
+                appleLink.rel = 'apple-touch-icon';
+                appleLink.href = dataUrl;
+                document.head.appendChild(appleLink);
+
+                let manifest = {
+                    name: "Welcome to the Kitchen",
+                    short_name: "The Kitchen",
+                    start_url: "./",
+                    display: "standalone",
+                    background_color: "#0D0F12",
+                    theme_color: "#0D0F12",
+                    icons: [{ src: dataUrl, sizes: "180x180", type: "image/png" }]
+                };
+                let mLink = document.createElement('link');
+                mLink.rel = 'manifest';
+                mLink.href = 'data:application/manifest+json,' + encodeURIComponent(JSON.stringify(manifest));
+                document.head.appendChild(mLink);
+            } catch (e) {}
+        }
+    </script>
+</body>
+</html>
