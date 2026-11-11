@@ -363,4 +363,277 @@
                     obj[headers[j]] = (cols[j] !== undefined) ? cols[j].trim() : '';
                 }
                 obj.video = (obj.video === 'TRUE' || obj.video === 'true' || obj.video === '1' || obj.video === 'Y');
-                if (!obj.recipe_id) obj.recipe_id =
+                if (!obj.recipe_id) obj.recipe_id = 'rec-' + String(i).padStart(4, '0');
+                if (!obj.recipe_title) continue;
+                result.push(obj);
+            }
+            return result.length > 0 ? result : allRecipes;
+        }
+
+        function populateDropdowns() {
+            let proCats = new Set(), pros = new Set(), menuCats = new Set(), methods = new Set(), seasons = new Set(), cuisines = new Set(), chefs = new Set(), occasions = new Set();
+
+            allRecipes.forEach(r => {
+                if (r.pro_cat) proCats.add(r.pro_cat);
+                if (r.pro) pros.add(r.pro);
+                if (r.cuisine_origin) cuisines.add(r.cuisine_origin);
+                if (r.chef) chefs.add(r.chef);
+                if (r.all_menu_cats) r.all_menu_cats.split('|').forEach(m => menuCats.add(m.trim()));
+                if (r.all_methods) r.all_methods.split('|').forEach(m => methods.add(m.trim()));
+                if (r.all_seasons) r.all_seasons.split('|').forEach(s => seasons.add(s.trim()));
+                if (r.all_occasions) r.all_occasions.split('|').forEach(o => occasions.add(o.trim()));
+            });
+
+            fillSelect('filterProCat', proCats);
+            fillSelect('filterPro', pros);
+            fillSelect('filterCuisine', cuisines);
+            fillSelect('filterMenuCat', menuCats);
+            fillSelect('filterMethod', methods);
+            fillSelect('filterSeason', seasons);
+            fillSelect('filterOccasion', occasions);
+
+            let chefSelect = document.getElementById('filterChef');
+            chefSelect.innerHTML = '<option value="">All Chefs & Guests</option>';
+            Array.from(chefs).sort().forEach(c => {
+                let displayName = chefNameMap[c] || c;
+                chefSelect.innerHTML += `<option value="${c}">${displayName}</option>`;
+            });
+        }
+
+        function fillSelect(elementId, setValues) {
+            let el = document.getElementById(elementId);
+            let currentVal = el.value;
+            let label = el.options[0] ? el.options[0].text : 'All';
+            el.innerHTML = `<option value="">${label}</option>`;
+            Array.from(setValues).filter(Boolean).sort().forEach(val => {
+                el.innerHTML += `<option value="${val}">${val}</option>`;
+            });
+            el.value = currentVal;
+        }
+
+        function onProCatChange() {
+            let selectedCat = document.getElementById('filterProCat').value;
+            let proSet = new Set();
+            allRecipes.forEach(r => {
+                if (!selectedCat || r.pro_cat === selectedCat) {
+                    if (r.pro) proSet.add(r.pro);
+                }
+            });
+            fillSelect('filterPro', proSet);
+        }
+
+        function toggleMegaDrawer() {
+            let drawer = document.getElementById('megaDrawer');
+            drawer.classList.toggle('hidden');
+        }
+
+        function setQuickLens(type) {
+            clearAllFilters(false);
+            if (type === 'video') {
+                document.getElementById('filterVideoOnly').checked = true;
+            } else if (type === 'italian') {
+                document.getElementById('filterCuisine').value = 'Italy';
+            } else if (type === 'gameday') {
+                document.getElementById('filterOccasion').value = 'Football';
+            } else if (type === 'grill') {
+                document.getElementById('filterMethod').value = 'Grilling';
+            } else if (type === 'slowcook') {
+                document.getElementById('filterMethod').value = 'Slow Cooking';
+            } else if (type === 'handheld') {
+                document.getElementById('filterMenuCat').value = 'Handheld';
+            }
+            applyFilters();
+        }
+
+        function clearAllFilters(re-render = true) {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('filterProCat').value = '';
+            document.getElementById('filterPro').value = '';
+            document.getElementById('filterCuisine').value = '';
+            document.getElementById('filterMenuCat').value = '';
+            document.getElementById('filterMethod').value = '';
+            document.getElementById('filterSeason').value = '';
+            document.getElementById('filterOccasion').value = '';
+            document.getElementById('filterChef').value = '';
+            document.getElementById('filterVideoOnly').checked = false;
+            if (re-render) applyFilters();
+        }
+
+        function applyFilters() {
+            let query = document.getElementById('searchInput').value.toLowerCase().trim();
+            let proCat = document.getElementById('filterProCat').value;
+            let pro = document.getElementById('filterPro').value;
+            let cuisine = document.getElementById('filterCuisine').value;
+            let menuCat = document.getElementById('filterMenuCat').value;
+            let method = document.getElementById('filterMethod').value;
+            let season = document.getElementById('filterSeason').value;
+            let occasion = document.getElementById('filterOccasion').value;
+            let chef = document.getElementById('filterChef').value;
+            let videoOnly = document.getElementById('filterVideoOnly').checked;
+            let sortMode = document.getElementById('sortSelect').value;
+
+            let filtered = allRecipes.filter(r => {
+                if (videoOnly && !r.video) return false;
+                if (proCat && r.pro_cat !== proCat) return false;
+                if (pro && r.pro !== pro) return false;
+                if (cuisine && r.cuisine_origin !== cuisine) return false;
+                if (menuCat && !(r.all_menu_cats || '').toLowerCase().includes(menuCat.toLowerCase())) return false;
+                if (method && !(r.all_methods || '').toLowerCase().includes(method.toLowerCase())) return false;
+                if (season && !(r.all_seasons || '').toLowerCase().includes(season.toLowerCase())) return false;
+                if (occasion && !(r.all_occasions || '').toLowerCase().includes(occasion.toLowerCase())) return false;
+                if (chef && r.chef !== chef) return false;
+
+                if (query) {
+                    let searchable = `${r.recipe_title} ${r.subtype} ${r.pro} ${r.pro_subcat} ${r.cuisine_origin} ${r.chef}`.toLowerCase();
+                    if (!searchable.includes(query)) return false;
+                }
+                return true;
+            });
+
+            // Sorting
+            filtered.sort((a, b) => {
+                if (sortMode === 'season-asc') {
+                    let sa = parseInt(a.season) || 0, sb = parseInt(b.season) || 0;
+                    if (sa !== sb) return sa - sb;
+                    let ea = parseInt(a.episode) || 0, eb = parseInt(b.episode) || 0;
+                    return ea - eb;
+                } else {
+                    return a.recipe_title.localeCompare(b.recipe_title);
+                }
+            });
+
+            renderGrid(filtered);
+            updateActiveBreadcrumbs({proCat, pro, cuisine, menuCat, method, season, occasion, chef, videoOnly, query});
+        }
+
+        function renderGrid(recipes) {
+            let grid = document.getElementById('recipeGrid');
+            let emptyState = document.getElementById('emptyState');
+            let countHeader = document.getElementById('resultCountHeader');
+            let countDisplay = document.getElementById('recipeCountDisplay');
+
+            countHeader.textContent = `Showing ${recipes.toLocaleString()} of ${allRecipes.length.toLocaleString()} recipes`;
+            countDisplay.textContent = allRecipes.length.toLocaleString();
+
+            if (recipes.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            emptyState.classList.add('hidden');
+
+            let html = '';
+            recipes.forEach(r => {
+                let seBadge = (r.season && r.episode) ? `S${r.season} · E${r.episode}` : 'Recipe';
+                let chefDisplay = chefNameMap[r.chef] || r.chef || 'Chef';
+                let videoBadge = r.video ? `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-copper/20 text-copper border border-copper/30">🎥 Video</span>` : '';
+                
+                let proteinBreadcrumb = [r.pro_cat, r.pro, r.pro_subcat].filter(Boolean).join(' › ');
+                let primaryCat = r.menu_cat || 'Recipe';
+                if (r.menu_cat2) primaryCat += ` / ${r.menu_cat2}`;
+
+                html += `
+                    <div class="group bg-cardbg border border-bordercolor hover:border-copper/50 rounded-2xl p-5 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-lg">
+                        <div>
+                            <div class="flex items-center justify-between mb-3 text-xs">
+                                <span class="font-mono px-2.5 py-1 rounded-md bg-obsidian border border-bordercolor text-gray-400 font-medium">${seBadge}</span>
+                                <div class="flex items-center gap-2">
+                                    ${videoBadge}
+                                    <span class="px-2 py-0.5 rounded text-[11px] bg-obsidian/80 text-gray-300 border border-bordercolor">${chefDisplay}</span>
+                                </div>
+                            </div>
+
+                            <a href="${r.recipe_link}" target="_blank" rel="noopener noreferrer" class="block text-lg font-bold text-white group-hover:text-copper transition-colors mb-2 leading-snug">
+                                ${r.recipe_title} <span class="text-xs font-normal text-gray-500 inline-block transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">↗</span>
+                            </a>
+
+                            <div class="flex flex-wrap gap-1.5 mb-4">
+                                <span class="px-2 py-0.5 rounded-full text-[11px] font-medium bg-obsidian text-gray-300 border border-bordercolor">${primaryCat}</span>
+                                ${r.subtype ? `<span class="px-2 py-0.5 rounded-full text-[11px] font-medium bg-obsidian text-gray-300 border border-bordercolor">${r.subtype}</span>` : ''}
+                                ${r.meal ? `<span class="px-2 py-0.5 rounded-full text-[11px] font-medium bg-obsidian text-gray-300 border border-bordercolor">${r.meal}</span>` : ''}
+                            </div>
+                        </div>
+
+                        <div class="pt-3 border-t border-bordercolor/60 text-xs text-gray-400 space-y-1">
+                            ${proteinBreadcrumb ? `<div class="truncate"><span class="text-gray-500">Protein:</span> <span class="text-gray-300">${proteinBreadcrumb}</span></div>` : ''}
+                            ${r.cuisine_origin ? `<div><span class="text-gray-500">Origin:</span> <span class="text-gray-300">${r.cuisine_origin}</span></div>` : ''}
+                            ${r.all_methods ? `<div><span class="text-gray-500">Method:</span> <span class="text-gray-300">${r.all_methods}</span></div>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+        }
+
+        function updateActiveBreadcrumbs(f) {
+            let bar = document.getElementById('activeBreadcrumbBar');
+            let list = document.getElementById('activeFiltersList');
+            let badge = document.getElementById('activeFilterBadge');
+            let count = 0;
+            let html = '';
+
+            function addChip(label, val, clearFn) {
+                count++;
+                html += `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-obsidian border border-bordercolor text-gray-300">
+                    <span class="text-gray-500">${label}:</span> <span class="text-white font-medium">${val}</span>
+                    <button onclick="${clearFn}" class="text-gray-400 hover:text-white ml-1">×</button>
+                </span>`;
+            }
+
+            if (f.query) addChip('Search', f.query, "document.getElementById('searchInput').value=''; applyFilters();");
+            if (f.proCat) addChip('Protein Cat', f.proCat, "document.getElementById('filterProCat').value=''; applyFilters();");
+            if (f.pro) addChip('Protein', f.pro, "document.getElementById('filterPro').value=''; applyFilters();");
+            if (f.cuisine) addChip('Cuisine', f.cuisine, "document.getElementById('filterCuisine').value=''; applyFilters();");
+            if (f.menuCat) addChip('Menu', f.menuCat, "document.getElementById('filterMenuCat').value=''; applyFilters();");
+            if (f.method) addChip('Method', f.method, "document.getElementById('filterMethod').value=''; applyFilters();");
+            if (f.season) addChip('Season', f.season, "document.getElementById('filterSeason').value=''; applyFilters();");
+            if (f.occasion) addChip('Occasion', f.occasion, "document.getElementById('filterOccasion').value=''; applyFilters();");
+            if (f.chef) addChip('Chef', f.chef, "document.getElementById('filterChef').value=''; applyFilters();");
+            if (f.videoOnly) addChip('Video', 'Required', "document.getElementById('filterVideoOnly').checked=false; applyFilters();");
+
+            if (count > 0) {
+                bar.classList.remove('hidden');
+                badge.textContent = count;
+                badge.classList.remove('hidden');
+                list.innerHTML = html;
+            } else {
+                bar.classList.add('hidden');
+                badge.classList.add('hidden');
+            }
+        }
+
+        function injectDynamicPwaAssets() {
+            let canvas = document.createElement('canvas');
+            canvas.width = 180;
+            canvas.height = 180;
+            let ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#0D0F12';
+            ctx.fillRect(0, 0, 180, 180);
+            ctx.fillStyle = '#D97736';
+            ctx.font = 'bold 72px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('🍳', 90, 90);
+
+            let link = document.createElement('link');
+            link.rel = 'apple-touch-icon';
+            link.href = canvas.toDataURL('image/png');
+            document.head.appendChild(link);
+
+            let manifest = {
+                name: "Welcome to the Kitchen",
+                short_name: "The Kitchen",
+                start_url: "./",
+                display: "standalone",
+                background_color: "#0D0F12",
+                theme_color: "#0D0F12",
+                icons: [{ src: canvas.toDataURL('image/png'), sizes: "180x180", type: "image/png" }]
+            };
+            let mLink = document.createElement('link');
+            mLink.rel = 'manifest';
+            mLink.href = 'data:application/manifest+json,' + encodeURIComponent(JSON.stringify(manifest));
+            document.head.appendChild(mLink);
+        }
+    </script>
+</body>
+</html>
